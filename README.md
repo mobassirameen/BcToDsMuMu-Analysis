@@ -3,13 +3,11 @@
 ```
 source /cvmfs/cms.cern.ch/cmsset_default.sh
 export SCRAM_ARCH=slc7_amd64_gcc700
-cmsrel CMSSW_10_2_18
-cd CMSSW_10_2_18/src/
+cmsrel CMSSW_10_6_12
+cd CMSSW_10_6_12/src/
 cmsenv
 voms-proxy-init -voms cms -valid 192:00
-git clone -b newbcdstomumucode https://:@gitlab.cern.ch:8443/ckar/bctodsmumu-analysis.git
-
-rm -rf bctodsmumu-analysis/JPsiKsPAT
+git clone git@github.com:mobassirameen/bctodsmumu-analysis.git
 
 scram b -j8
 
