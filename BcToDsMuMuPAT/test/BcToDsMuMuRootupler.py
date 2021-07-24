@@ -33,7 +33,7 @@ process.source = cms.Source("PoolSource",
         #'/store/data/Run2016C/Charmonium/MINIAOD/17Jul2018-v1/20000/9C03CBE2-4B8B-E811-9299-0CC47AC17678.root',
         #'/store/data/Run2016H/DoubleMuonLowMass/MINIAOD/17Jul2018-v1/50000/9A79D8BA-D38B-E811-BCD3-0090FAA57AE0.root',               
 	mylist,
-        '/store/mc/RunIIAutumn18MiniAOD/DsToPhiPi_ToMuMu_MuFilter_TuneCP5_13TeV-pythia8/MINIAODSIM/102X_upgrade2018_realistic_v15-v1/00000/7DF46828-0E2C-684D-8305-FA95C167B3AC.root',
+        #'/store/mc/RunIIAutumn18MiniAOD/DsToPhiPi_ToMuMu_MuFilter_TuneCP5_13TeV-pythia8/MINIAODSIM/102X_upgrade2018_realistic_v15-v1/00000/7DF46828-0E2C-684D-8305-FA95C167B3AC.root',
     )
 )
 
