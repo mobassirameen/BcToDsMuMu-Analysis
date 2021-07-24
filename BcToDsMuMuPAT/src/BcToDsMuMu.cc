@@ -97,7 +97,7 @@ BcToDsMuMu::BcToDsMuMu(const edm::ParameterSet& iConfig):
   nB(0),
   //B_mass(0), B_px(0), B_py(0), B_pz(0),
   
-  B_Phi_mass(0),
+  //B_Phi_mass(0),
   B_Ds_mass(0),
   Ds_pt(0),
   pion_pt(0),
@@ -157,7 +157,7 @@ void BcToDsMuMu::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
             //if(fabs(iTrack1->pdgId())!=321) continue;
 	    //if(iTrack1->pt()<0.5) continue;
 	    //if(iTrack1->pt()<0.8) continue;
-	    if(iTrack1->pt()<2.0) continue;
+	    if(iTrack1->pt()<2.0) continue; // this cut of tarck1 pt worked for official mc DsToPhi(MuMu)Pi
 	    if(!(iTrack1->trackHighPurity())) continue;
 	    
             for(View<pat::PackedCandidate>::const_iterator iTrack2 = iTrack1+1;
@@ -169,14 +169,14 @@ void BcToDsMuMu::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
 	      if(iTrack2->charge()==0) continue;
               //if(fabs(iTrack1->pdgId())!=321) continue;
 	      //if(iTrack2->pt()<0.5) continue;
-	      if(iTrack2->pt()<2.0) continue;
+	      if(iTrack2->pt()<2.0) continue; // this cut of track2 pt worked for official mc DsToPhi(MuMu)Pi
 	      if(!(iTrack2->trackHighPurity())) continue;
 
 	      if(iTrack1->charge() == iTrack2->charge()) continue;
 	     
               // ********** Lets see first Phi Candidate.
-              TLorentzVector kaon14V,kaon24V,Phi4V;
-              Phi4V=kaon14V+kaon24V;
+              //TLorentzVector kaon14V,kaon24V,Phi4V;
+              //Phi4V=kaon14V+kaon24V;
      
               
               
@@ -192,7 +192,7 @@ void BcToDsMuMu::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
                   //if(fabs(iTrack1->pdgId())!=211) continue;
 		  if(iTrack3->charge()==0) continue;
 		  //if(iTrack3->pt()<0.2) continue;
-		  if(iTrack3->pt()<1.0) continue;
+		  if(iTrack3->pt()<1.0) continue; // this cut of track3 pt cut worked for official mc DsToPhi(MuMu)Pi
 		  if(!(iTrack3->trackHighPurity())) continue;
 		  
                   //Now let's see if these three tracks make a vertex		  
@@ -203,11 +203,11 @@ void BcToDsMuMu::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
 
 		
 		ParticleMass pion_mass = 0.13957018;
-		//ParticleMass kaon_mass = 0.493677;
-                ParticleMass muon_mass = 0.10565837; //pdg mass
-		//float kaon_sigma = 1.6e-5;
+		ParticleMass kaon_mass = 0.493677;
+                //ParticleMass muon_mass = 0.10565837; //pdg mass
+		float kaon_sigma = 1.6e-5;
 		float pion_sigma = pion_mass*1.e-6;
-		float muon_sigma = muon_mass*1.e-6;
+		//float muon_sigma = muon_mass*1.e-6;
 	// ------------ started Vertexing	
 	        
                 //Creating a KinematicParticleFactory
@@ -218,11 +218,11 @@ void BcToDsMuMu::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
                 float ndf = 0.;
                 vector<RefCountedKinematicParticle> pionParticles;
                 try {
-		  //pionParticles.push_back(pFactory.particle(pion1TT,kaon_mass,chi,ndf,kaon_sigma));
-		  pionParticles.push_back(pFactory.particle(pion1TT,muon_mass,chi,ndf,muon_sigma));
-		  //pionParticles.push_back(pFactory.particle(pion2TT,kaon_mass,chi,ndf,kaon_sigma));
-		  pionParticles.push_back(pFactory.particle(pion2TT,muon_mass,chi,ndf,muon_sigma));
-		  pionParticles.push_back(pFactory.particle(pion3TT,pion_mass,chi,ndf,pion_sigma));
+		  pionParticles.push_back(pFactory.particle(pion1TT,kaon_mass,chi,ndf,kaon_sigma)); // for Private mc BcToDs(KpKmPi)MuMu
+		  //pionParticles.push_back(pFactory.particle(pion1TT,muon_mass,chi,ndf,muon_sigma)); //for official mc DsToPhi(MuMu)Pi
+		  pionParticles.push_back(pFactory.particle(pion2TT,kaon_mass,chi,ndf,kaon_sigma)); //for Private mc BcToDs(KpKmPi)MuMu
+		  //pionParticles.push_back(pFactory.particle(pion2TT,muon_mass,chi,ndf,muon_sigma)); //for official mc DsToPhi(MuMu)Pi
+		  pionParticles.push_back(pFactory.particle(pion3TT,pion_mass,chi,ndf,pion_sigma)); // It is common for both
 			
 		}
                 catch(...) {
@@ -272,20 +272,22 @@ void BcToDsMuMu::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
  	        // K+K-Pi+ invariant mass (before kinematic vertex fit)
  		// ***************************
 
- 		TLorentzVector pion4V, Ds4V; 
- 		//kaon14V.SetXYZM(iTrack1->px(),iTrack1->py(),iTrack1->pz(),kaon_mass);
- 		kaon14V.SetXYZM(iTrack1->px(),iTrack1->py(),iTrack1->pz(),muon_mass); //Changed kaon_mass to muon_mass
- 		//kaon24V.SetXYZM(iTrack2->px(),iTrack2->py(),iTrack2->pz(),kaon_mass);
- 		kaon24V.SetXYZM(iTrack2->px(),iTrack2->py(),iTrack2->pz(),muon_mass); //Changed kaon_mass to muon_mass
+ 		//TLorentzVector pion4V, Ds4V; 
+ 		TLorentzVector kaon14V, kaon24V, pion4V, Ds4V; 
+ 		kaon14V.SetXYZM(iTrack1->px(),iTrack1->py(),iTrack1->pz(),kaon_mass); // for private mc
+ 		//kaon14V.SetXYZM(iTrack1->px(),iTrack1->py(),iTrack1->pz(),muon_mass); //Changed kaon_mass to muon_mass for official mc
+ 		kaon24V.SetXYZM(iTrack2->px(),iTrack2->py(),iTrack2->pz(),kaon_mass); // for private mc 
+ 		//kaon24V.SetXYZM(iTrack2->px(),iTrack2->py(),iTrack2->pz(),muon_mass); //Changed kaon_mass to muon_mass for official mc
  		pion4V.SetXYZM(iTrack3->px(),iTrack3->py(),iTrack3->pz(),pion_mass);
 
 
 
-                Phi4V=kaon14V+kaon24V;
-	        Ds4V=Phi4V+pion4V;
+                //Phi4V=kaon14V+kaon24V;
+	        //Ds4V=Phi4V+pion4V;
+	        Ds4V=kaon14V+kaon24V+pion4V;
 		//cout<< "Ds mass 1st : " << Ds4V.M() << endl;
 
-                if(Phi4V.M()<0.970 || Phi4V.M()>1.070) continue;
+                //if(Phi4V.M()<0.970 || Phi4V.M()>1.070) continue;
                 if(Ds4V.M()<1.90 || Ds4V.M()>2.04) continue;
                 //if(Ds4V.Pt()<0)continue;
 	
@@ -300,7 +302,7 @@ void BcToDsMuMu::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
 		
 		//B_Ds_mass->push_back(Ds4V.M());
 		
-		B_Phi_mass->push_back(Phi4V.M());
+		//B_Phi_mass->push_back(Phi4V.M());
 		B_Ds_mass->push_back( Ds_vFit_noMC->currentState().mass() );
 		//B_Phi_mass->push_back(Phi4V.M());
                 Ds_pt->push_back(Ds4V.Pt());
@@ -329,7 +331,7 @@ void BcToDsMuMu::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
   
   nB = 0;
 
-  B_Phi_mass->clear(); 
+  //B_Phi_mass->clear(); 
   B_Ds_mass->clear(); 
   Ds_pt->clear();
   pion_pt->clear(); 
@@ -350,7 +352,7 @@ BcToDsMuMu::beginJob()
 
   tree_->Branch("nB",&nB,"nB/i");
   
-  tree_->Branch("B_Phi_mass", &B_Phi_mass);
+  //tree_->Branch("B_Phi_mass", &B_Phi_mass);
   tree_->Branch("B_Ds_mass", &B_Ds_mass);
   tree_->Branch("Ds_pt", &Ds_pt);
   tree_->Branch("pion_pt", &pion_pt);
